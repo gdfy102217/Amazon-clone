@@ -3,7 +3,7 @@ import FormattedPrice from "./FormattedPrice";
 
 interface Props {
   brand: string;
-  category: string;
+  category: [];
   description: string;
   image: string;
   isNew: boolean;

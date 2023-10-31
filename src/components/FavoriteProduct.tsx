@@ -6,7 +6,7 @@ import { addToCart, deleteFavorite } from "@/store/nextSlice";
 interface Item {
   _id: number;
   brand: string;
-  category: string;
+  category: [];
   description: string;
   image: string;
   isNew: boolean;

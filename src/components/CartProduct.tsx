@@ -11,7 +11,7 @@ import {
 } from "@/store/nextSlice";
 interface Item {
   brand: string;
-  category: string;
+  category: [];
   description: string;
   image: string;
   isNew: boolean;

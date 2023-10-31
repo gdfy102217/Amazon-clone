@@ -1,4 +1,4 @@
-// 'use client';
+'use client';
 import React, { useState, useEffect } from 'react'
 import prismadb from '@/libs/prismadb';
 import Link from 'next/link';
@@ -7,11 +7,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { StateProps, StoreProduct, ProductProps } from "../../../type";
 import Products from '@/components/Products';
 import FormattedPrice from "@/components/FormattedPrice";
-import CustomSearchPanel from "@/components/customSearchPanel"
+import CustomSearchPanel from "@/components/CustomSearchPanel";
 
 
 
-const index = () => {
+const Index = () => {
     const router = useRouter();
     const path = router.pathname;
     const { query } = router;
@@ -71,4 +71,4 @@ const index = () => {
   )
 }
 
-export default index
+export default Index
