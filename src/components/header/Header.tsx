@@ -68,6 +68,13 @@ const Header = () => {
     setBlurTimeoutId(timeoutId);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault(); // Prevents the default action of the Enter key
+      handleSubmitSearch(e as unknown as React.MouseEvent<HTMLButtonElement>);
+    }
+  };
+
   const handleSearchResultClick = () => {
     // Clear the onBlur timeout if a search result is clicked
     if (blurTimeoutId !== null) {
@@ -114,6 +121,7 @@ const Header = () => {
             placeholder="Search next_amazon_yt products"
             onFocus={() => setIsSearchFocused(true)}
             onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
           />
           <button className="w-12 h-full bg-amazon_yellow text-black text-2xl flex items-center justify-center absolute right-0 rounded-tr-md rounded-br-md"
             onClick={handleSubmitSearch}
