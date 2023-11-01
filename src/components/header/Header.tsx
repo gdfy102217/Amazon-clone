@@ -16,6 +16,7 @@ import SearchProducts from "../SearchProducts";
 import SignInPage from "@/pages/sign-in";
 import { useUser } from "@clerk/clerk-react";
 import { useRouter } from 'next/router';
+import Fuse from 'fuse.js';
 
 
 const Header = () => {
@@ -87,9 +88,19 @@ const Header = () => {
 
 
   useEffect(() => {
-    const filtered = allData.filter((item: StoreProduct) =>
-      item.title.toLocaleLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const options = {
+      keys: ['title', 'brand'],
+      includeScore: true,
+      threshold: 0.6, // Adjust this value to control the fuzziness, lower means more strict
+    };
+
+    const fuse = new Fuse(allData, options);
+    const result = fuse.search(searchQuery);
+
+    const filtered = result.map(({ item }) => item);
+    // const filtered = allData.filter((item: StoreProduct) =>
+    //   item.title.toLocaleLowerCase().includes(searchQuery.toLowerCase())
+    // );
     setFilteredProducts(filtered);
   }, [searchQuery]);
 
