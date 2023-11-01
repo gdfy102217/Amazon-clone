@@ -124,6 +124,7 @@ const Header = () => {
             onKeyDown={handleKeyDown}
           />
           <button className="w-12 h-full bg-amazon_yellow text-black text-2xl flex items-center justify-center absolute right-0 rounded-tr-md rounded-br-md"
+            name="search-btn"
             onClick={handleSubmitSearch}
           >
             <span >
