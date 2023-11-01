@@ -45,7 +45,20 @@ const Index = () => {
       <div className='flex flex-col gap-2 w-3/5 mx-auto'>
       {filteredProducts.map((item: ProductProps) => (
         <div key={item._id}>
-          <Link href={`/product/${item._id}`} className="flex items-center gap-4 border hover:bg-gray-300">
+          <Link href={{
+                  pathname: `/product/${item._id}`,
+                  query: {
+                    _id: item._id,
+                    brand: item.brand,
+                    category: item.category,
+                    description: item.description,
+                    image: item.image,
+                    isNew: item.isNew,
+                    oldPrice: item.oldPrice,
+                    price: item.price,
+                    title: item.title,
+                  },
+                }} className="flex items-center gap-4 border hover:bg-gray-300">
             <img className="w-24" src={item.image} alt="productImage" />
             <div>
               <p className="text-xs -mb-1">
