@@ -7,6 +7,9 @@ import { setAllProducts } from "@/store/nextSlice";
 import Head from "next/head";
 import prismadb from "@/libs/prismadb";
 
+import useEventTracker, { EventMetaData }  from "@/pages/hooks/useEventTracker";
+import { useAgentTask } from "@/contexts/agentTaskContext";
+
 
 interface Props {
   productData: ProductProps;
@@ -14,6 +17,20 @@ interface Props {
 
 export default function Home({ productData }: Props) {
   const dispatch = useDispatch();
+  const { agentId, taskId } = useAgentTask();
+  const { trackEvent } = useEventTracker();
+
+  trackEvent({
+    app: 'amazon',
+    type: `task_${taskId}`,
+    elementId: `visit_main`,
+    msg: `visit main page`,
+    agentId: agentId,
+    taskId: taskId,
+    urlPath: window.location.pathname,
+    timestamp: Date.now(),
+  } as  EventMetaData);
+
   useEffect(() => {
     dispatch(setAllProducts({ allProducts: productData }));
   }, [productData]);

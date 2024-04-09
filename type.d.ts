@@ -50,3 +50,9 @@ export interface OrderProps {
   updatedAt: Date;
   orderItems: OrderItemProps[]; // This is the array of order items related to the order
 }
+
+
+export interface AgentTaskType {
+  agentId: string;
+  taskId: string;
+}

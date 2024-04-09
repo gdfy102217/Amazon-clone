@@ -1,18 +1,8 @@
 import axios from 'axios'
 import { NextApiRequest, NextApiResponse } from "next";
+import { EventMetaData } from '@/pages/hooks/useEventTracker';
 
-const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + process.env.NEXT_PUBLIC_AGENT_AUTH_SECRET,
-}
-interface EventMetaData {
-    app: string;
-    type: string;
-    elementId: string;
-    event_msg: string;
-    agent_id: string;
-    timestamp: number;
-  }
+
 
 interface EventData {
     event: string;
@@ -24,18 +14,27 @@ interface EventData {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     console.log(req.body);
     console.log('Transfer endpoint: ' + process.env.NEXT_PUBLIC_EVAL_ENDPOINT);
-    const { app, type, elementId, event_msg, agent_id, timestamp } = req.body;
+    const { app, type, elementId, msg, agentId, taskId, urlPath, timestamp, payload } = req.body;
+
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + agentId,
+    }
+
     const metadata: EventMetaData = {
         app: app,
         type: type,
         elementId: elementId,
-        event_msg: event_msg,
-        agent_id: agent_id,
-        timestamp: timestamp
+        msg: msg,
+        agentId: agentId,
+        taskId: taskId,
+        urlPath: urlPath,
+        timestamp: timestamp,
+        payload
     }
     const eventData: EventData = {
         event: app + '.' + type,
-        content: event_msg,
+        content: msg,
         metadata: metadata
     }
     try{

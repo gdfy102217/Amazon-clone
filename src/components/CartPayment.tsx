@@ -8,7 +8,14 @@ import { useUser } from "@clerk/clerk-react";
 import { SignedIn, UserButton, useSession } from "@clerk/clerk-react";
 import { resetCart } from "@/store/nextSlice";
 
+import { useAgentTask } from "@/contexts/agentTaskContext";
+import useEventTracker, { EventMetaData }  from "@/pages/hooks/useEventTracker";
+
+
 const CartPayment = () => {
+  const { agentId, taskId } = useAgentTask();
+  const { trackEvent } = useEventTracker();
+
   const dispatch = useDispatch();
   const { productData, userInfo } = useSelector(
     (state: StateProps) => state.next
@@ -34,8 +41,20 @@ const CartPayment = () => {
 
   const handleCheckout = async () => {
     console.log("Triggering Stripe Checkout")
-    const stripe = await stripePromise;
+    
+    trackEvent({
+      app: 'amazon',
+      type: `task_${taskId}`,
+      elementId: `checkout_btn`,
+      msg: `proceed to checkout`,
+      agentId: agentId,
+      taskId: taskId,
+      urlPath: window.location.pathname,
+      timestamp: Date.now(),
+      payload: productData,
+    } as  EventMetaData);
 
+    const stripe = await stripePromise;
     const response = await fetch("/api/checkout", {
       method: "POST",
       headers: {

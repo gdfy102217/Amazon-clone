@@ -7,13 +7,17 @@ import FormattedPrice from "./FormattedPrice";
 import { useDispatch } from "react-redux";
 import { addToCart, addToFavorite } from "@/store/nextSlice";
 import Link from "next/link";
-import useEventTracker from "@/pages/hooks/useEventTracker";
+import useEventTracker, { EventMetaData }  from "@/pages/hooks/useEventTracker";
+import { useAgentTask } from "@/contexts/agentTaskContext";
+
 
 
 
 const Products = ({ productData }: any) => {
+  const { agentId, taskId } = useAgentTask();
   const dispatch = useDispatch();
   const { trackEvent } = useEventTracker();
+
   return (
     <div className="w-full px-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
       {productData.map(
@@ -46,6 +50,8 @@ const Products = ({ productData }: any) => {
                     oldPrice: oldPrice,
                     price: price,
                     title: title,
+                    agentId: agentId,
+                    taskId: taskId,
                   },
                 }}
               >
@@ -73,7 +79,17 @@ const Products = ({ productData }: any) => {
                         title: title,
                         quantity: 1,
                       })
-                    )
+                    );
+                    trackEvent({
+                      app: 'amazon',
+                      type: `task_${taskId}`,
+                      elementId: `add_to_cart_btn_${_id}`,
+                      msg: `add to cart - ${_id}`,
+                      agentId: agentId,
+                      taskId: taskId,
+                      urlPath: window.location.pathname,
+                      timestamp: Date.now(),
+                    } as  EventMetaData);
                   }
                   }
                   className="w-full h-full border-b-[1px] border-b-gray-400 flex items-center justify-center text-xl bg-transparent hover:bg-amazon_yellow cursor-pointer duration-300"
@@ -81,7 +97,7 @@ const Products = ({ productData }: any) => {
                   <HiShoppingCart />
                 </span>
                 <span
-                  onClick={() =>
+                  onClick={() => {
                     dispatch(
                       addToFavorite({
                         _id: _id,
@@ -95,8 +111,18 @@ const Products = ({ productData }: any) => {
                         title: title,
                         quantity: 1,
                       })
-                    )
-                  }
+                    );
+                    trackEvent({
+                      app: 'amazon',
+                      type: `task_${taskId}`,
+                      elementId: `add_to_favor_btn_${_id}`,
+                      msg: `add to favor - ${_id}`,
+                      agentId: agentId,
+                      taskId: taskId,
+                      urlPath: window.location.pathname,
+                      timestamp: Date.now(),
+                    } as  EventMetaData);
+                  }}
                   className="w-full h-full border-b-[1px] border-b-gray-400 flex items-center justify-center text-xl bg-transparent hover:bg-amazon_yellow cursor-pointer duration-300"
                 >
                   <FaHeart />
@@ -110,19 +136,21 @@ const Products = ({ productData }: any) => {
             </div>
             <hr />
             <div className="px-4 py-3 flex flex-col gap-1">
-              <p className="text-xs text-gray-500 tracking-wide">{category}</p>
-              <p className="text-base font-medium">{title}</p>
-              <p className="flex items-center gap-2">
-                <span className="text-sm line-through">
-                  <FormattedPrice amount={oldPrice} />
-                </span>
-                <span className="text-amazon_blue font-semibold">
-                  <FormattedPrice amount={price} />
-                </span>
-              </p>
-              <p className="text-xs text-gray-600 text-justify">
-                {description.substring(0, 120)}
-              </p>
+              <div className="flex-1">
+                <p className="text-xs text-gray-500 tracking-wide line-clamp-2">{category}</p>
+                <p className="text-base font-medium line-clamp-2">{title}</p>
+                <p className="flex items-center gap-2">
+                  <span className="text-sm line-through">
+                    <FormattedPrice amount={oldPrice} />
+                  </span>
+                  <span className="text-amazon_blue font-semibold">
+                    <FormattedPrice amount={price} />
+                  </span>
+                </p>
+                <p className="text-xs text-gray-600 text-justify line-clamp-3">
+                  {description.substring(0, 120)}
+                </p>
+              </div>
               <button
                 onClick={() =>{
                   dispatch(
@@ -137,8 +165,18 @@ const Products = ({ productData }: any) => {
                       price: price,
                       title: title,
                       quantity: 1,
-                    })
-                  )
+                    }),
+                  ),
+                  trackEvent({
+                    app: 'amazon',
+                    type: `task_${taskId}`,
+                    elementId: `add_to_cart_btn_${_id}`,
+                    msg: `add to cart - ${_id}`,
+                    agentId: agentId,
+                    taskId: taskId,
+                    urlPath: window.location.pathname,
+                    timestamp: Date.now(),
+                  } as  EventMetaData);
                 }
                 }
                 className="h-10 font-medium bg-amazon_blue text-white rounded-md hover:bg-amazon_yellow hover:text-black duration-300 mt-2"

@@ -9,9 +9,14 @@ import Products from '@/components/Products';
 import FormattedPrice from "@/components/FormattedPrice";
 import CustomSearchPanel from "@/components/CustomSearchPanel";
 import Fuse from 'fuse.js';
+import useEventTracker, { EventMetaData }  from "@/pages/hooks/useEventTracker";
+import { useAgentTask } from "@/contexts/agentTaskContext";
 
 
 const Index = () => {
+    const { agentId, taskId } = useAgentTask();
+    const { trackEvent } = useEventTracker();
+
     const router = useRouter();
     const path = router.pathname;
     const { query } = router;
@@ -69,6 +74,8 @@ const Index = () => {
                     oldPrice: item.oldPrice,
                     price: item.price,
                     title: item.title,
+                    agentId: agentId,
+                    taskId: taskId,
                   },
                 }} className="flex items-center gap-4 border hover:bg-gray-300">
             <img className="w-24" src={item.image} alt="productImage" />

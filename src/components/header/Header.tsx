@@ -17,9 +17,13 @@ import SignInPage from "@/pages/sign-in";
 import { useUser } from "@clerk/clerk-react";
 import { useRouter } from 'next/router';
 import Fuse from 'fuse.js';
+import { useAgentTask } from "@/contexts/agentTaskContext";
+import useEventTracker, { EventMetaData }  from "@/pages/hooks/useEventTracker";
+
 
 
 const Header = () => {
+  const { agentId, taskId } = useAgentTask();
   const { session } = useSession();
   const [allData, setAllData] = useState([]);
   const { productData, favoriteData, userInfo, allProducts } = useSelector(
@@ -27,7 +31,8 @@ const Header = () => {
   );
   const { isSignedIn, user, isLoaded } = useUser();
   const router = useRouter();
-
+  
+  const { trackEvent } = useEventTracker();
   
   const dispatch = useDispatch();
   useEffect(() => {
@@ -52,12 +57,34 @@ const Header = () => {
   const [blurTimeoutId, setBlurTimeoutId] = useState<number | null>(null);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    trackEvent({
+      app: 'amazon',
+      type: `task_${taskId}`,
+      elementId: `search_bar`,
+      msg: `type & search for - ${e.target.value}`,
+      agentId: agentId,
+      taskId: taskId,
+      urlPath: window.location.pathname,
+      timestamp: Date.now(),
+    } as  EventMetaData);
     setSearchQuery(e.target.value);
   };
 
   const handleSubmitSearch = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    router.push(`/browse?search=${searchQuery}`)
+
+    trackEvent({
+      app: 'amazon',
+      type: `task_${taskId}`,
+      elementId: `search_bar`,
+      msg: `search for - ${searchQuery}`,
+      agentId: agentId,
+      taskId: taskId,
+      urlPath: window.location.pathname,
+      timestamp: Date.now(),
+    } as  EventMetaData);
+
+    router.push(`/browse?search=${searchQuery}&agentId=${agentId}&taskId=${taskId}`)
   };
 
   const handleBlur = () => {
@@ -109,7 +136,7 @@ const Header = () => {
       <div className="h-full w-full mx-auto inline-flex items-center justify-between gap-1 mdl:gap-3 px-4">
         {/* logo */}
         <Link
-          href={"/"}
+          href={`/?agentId=${agentId}&taskId=${taskId}`}
           className="px-2 border border-transparent hover:border-white cursor-pointer duration-300 flex items-center justify-center h-[70%]"
         >
           <Image className="w-28 object-cover mt-1" src={logo} alt="logoImg" />
@@ -164,6 +191,8 @@ const Header = () => {
                             oldPrice: item.oldPrice,
                             price: item.price,
                             title: item.title,
+                            agentId: agentId,
+                            taskId: taskId,
                           },
                         }}
                         onClick={handleSearchResultClick}
@@ -193,7 +222,7 @@ const Header = () => {
               className="w-8 h-8 rounded-full object-cover"
             /> */}
             <div className="w-8 h-8 rounded-full object-cover">
-              <UserButton afterSignOutUrl="/"/>
+              <UserButton afterSignOutUrl={`/?agentId=${agentId}&taskId=${taskId}`}/>
             </div>
             <div className="text-xs text-gray-100 flex flex-col justify-between">
               <p className="text-white font-bold">{user.username}</p>
@@ -206,7 +235,7 @@ const Header = () => {
             // href={"/sign-in"}
             className="text-xs text-gray-100 flex flex-col justify-center px-2 border border-transparent hover:border-white cursor-pointer duration-300 h-[70%]"
           >
-            <Link href={"/sign-in"}>
+            <Link href={`/sign-in?agentId=${agentId}&taskId=${taskId}`}>
             <p>Hello, sign in</p>
             <p className="text-white font-bold flex items-center">
               Account & Lists{" "}
@@ -219,7 +248,7 @@ const Header = () => {
         )}
         {/* fovorite */}
         <Link
-          href={"/favorite"}
+          href={`/favorite?agentId=${agentId}&taskId=${taskId}`}
           className="text-xs text-gray-100 flex flex-col justify-center px-2 border border-transparent hover:border-white cursor-pointer duration-300 h-[70%] relative"
         >
           <p>Marked</p>
@@ -231,7 +260,7 @@ const Header = () => {
           )}
         </Link>
         <Link
-          href={"/orders"}
+          href={`/orders?agentId=${agentId}&taskId=${taskId}`}
           className="text-xs text-gray-100 flex flex-col justify-center px-2 border border-transparent hover:border-white cursor-pointer duration-300 h-[70%] relative"
         >
           <p>Returns</p>
@@ -244,7 +273,7 @@ const Header = () => {
         </Link>
         {/* cart */}
         <Link
-          href={"/cart"}
+          href={`/cart?agentId=${agentId}&taskId=${taskId}`}
           className="flex items-center px-2 border border-transparent hover:border-white cursor-pointer duration-300 h-[70%] relative"
         >
           <Image

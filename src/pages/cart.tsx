@@ -1,13 +1,32 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StateProps, StoreProduct } from "../../type";
 import { useSelector } from "react-redux";
 import CartProduct from "@/components/CartProduct";
 import ResetCart from "@/components/ResetCart";
 import Link from "next/link";
 import CartPayment from "@/components/CartPayment";
+import useEventTracker, { EventMetaData }  from "@/pages/hooks/useEventTracker";
+import { useAgentTask } from "@/contexts/agentTaskContext";
+
 
 const CartPage = () => {
+  
   const { productData } = useSelector((state: StateProps) => state.next);
+
+  const { agentId, taskId } = useAgentTask();
+  const { trackEvent } = useEventTracker();
+
+  trackEvent({
+    app: 'amazon',
+    type: `task_${taskId}`,
+    elementId: `visit_cart`,
+    msg: `visit cart page`,
+    agentId: agentId,
+    taskId: taskId,
+    urlPath: window.location.pathname,
+    timestamp: Date.now(),
+  } as  EventMetaData);
+
   return (
     <div className="max-w-screen-2xl mx-auto px-6 grid grid-cols-5 gap-10 py-4">
       {productData.length > 0 ? (

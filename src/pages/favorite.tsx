@@ -4,9 +4,24 @@ import { StateProps, StoreProduct } from "../../type";
 import FavoriteProduct from "@/components/FavoriteProduct";
 import ResetFavoriteItems from "@/components/ResetFavoriteItems";
 import Link from "next/link";
+import useEventTracker, { EventMetaData }  from "@/pages/hooks/useEventTracker";
+import { useAgentTask } from "@/contexts/agentTaskContext";
 
 const FavoritePage = () => {
   const { favoriteData } = useSelector((state: StateProps) => state.next);
+  const { agentId, taskId } = useAgentTask();
+  const { trackEvent } = useEventTracker();
+
+  trackEvent({
+    app: 'amazon',
+    type: `task_${taskId}`,
+    elementId: `visit_favor`,
+    msg: `visit favor page`,
+    agentId: agentId,
+    taskId: taskId,
+    urlPath: window.location.pathname,
+    timestamp: Date.now(),
+  } as  EventMetaData);
 
   return (
     <div className="max-w-screen-xl mx-auto px-6 gap-10 py-4">

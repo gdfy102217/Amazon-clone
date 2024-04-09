@@ -9,11 +9,28 @@ import { useUser } from "@clerk/clerk-react";
 import { OrderProps } from "../../type";
 import OrderProduct from "@/components/OrderProduct";
 import { format } from 'date-fns';
+import useEventTracker, { EventMetaData }  from "@/pages/hooks/useEventTracker";
+import { useAgentTask } from "@/contexts/agentTaskContext";
+
 
 const OrderPage = () => {
   const { user } = useUser();
   const { favoriteData } = useSelector((state: StateProps) => state.next);
   const [orderData, setOrderData] = useState<OrderProps[]>([]);
+
+  const { agentId, taskId } = useAgentTask();
+  const { trackEvent } = useEventTracker();
+
+  trackEvent({
+    app: 'amazon',
+    type: `task_${taskId}`,
+    elementId: `visit_order`,
+    msg: `visit orders page`,
+    agentId: agentId,
+    taskId: taskId,
+    urlPath: window.location.pathname,
+    timestamp: Date.now(),
+  } as  EventMetaData);
 
   useEffect(() => {
     const fetchOrders = async () => {
