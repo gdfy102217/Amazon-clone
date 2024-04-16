@@ -10,9 +10,6 @@ import Link from "next/link";
 import useEventTracker, { EventMetaData }  from "@/pages/hooks/useEventTracker";
 import { useAgentTask } from "@/contexts/agentTaskContext";
 
-
-
-
 const Products = ({ productData }: any) => {
   const { agentId, taskId } = useAgentTask();
   const dispatch = useDispatch();

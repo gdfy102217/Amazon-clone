@@ -11,7 +11,7 @@ import CustomSearchPanel from "@/components/CustomSearchPanel";
 import Fuse from 'fuse.js';
 import useEventTracker, { EventMetaData }  from "@/pages/hooks/useEventTracker";
 import { useAgentTask } from "@/contexts/agentTaskContext";
-
+import SearchItem from "@/components/SearchItem";
 
 const Index = () => {
     const { agentId, taskId } = useAgentTask();
@@ -55,48 +55,13 @@ const Index = () => {
   
   return (
     <div className='bg-white'>
-      <div>
-        <CustomSearchPanel />
-      </div>
+      {/*<div>*/}
+      {/*  <CustomSearchPanel />*/}
+      {/*</div>*/}
       {/* <Products productData={filteredProducts} /> */}
-      <div className='flex flex-col gap-2 w-3/5 mx-auto'>
+      <div className='flex flex-row flex-wrap gap-2'>
       {filteredProducts.map((item: ProductProps) => (
-        <div key={item._id}>
-          <Link href={{
-                  pathname: `/product/${item._id}`,
-                  query: {
-                    _id: item._id,
-                    brand: item.brand,
-                    category: item.category,
-                    description: item.description,
-                    image: item.image,
-                    isNew: item.isNew,
-                    oldPrice: item.oldPrice,
-                    price: item.price,
-                    title: item.title,
-                    agentId: agentId,
-                    taskId: taskId,
-                  },
-                }} className="flex items-center gap-4 border hover:bg-gray-300">
-            <img className="w-24" src={item.image} alt="productImage" />
-            <div>
-              <p className="text-xs -mb-1">
-                {item.brand}_{item.category}
-              </p>
-              <p className="text-lg font-medium">{item.title}</p>
-              <p className="text-xs">{item.description.substring(0, 100)}</p>
-              <p className="text-sm flex items-center gap-1">
-                price:{" "}
-                <span className="font-semibold">
-                  <FormattedPrice amount={item.price} />
-                </span>
-                <span className="text-gray-600 line-through">
-                  <FormattedPrice amount={item.oldPrice} />
-                </span>
-              </p>
-            </div>
-          </Link>
-        </div>
+        <SearchItem key={item._id} item={item} agentId={agentId} taskId={taskId} />
       ))}
       </div>
     </div>
