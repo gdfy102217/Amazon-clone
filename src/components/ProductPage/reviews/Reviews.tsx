@@ -1,7 +1,6 @@
 import { Rating } from "@mui/material";
 // import { useSession, signIn } from "next-auth/react";
 import { useState } from "react";
-import AddReview from "./AddReview";
 import Table from "./Table";
 
 const Reviews = ({ product }: any) => {
